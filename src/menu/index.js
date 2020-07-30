@@ -1,37 +1,31 @@
 /** @module menu */
 import clear from 'clear';
+import outputter from 'outputter';
 
-const createMenu = () => {
-    const menuRow = Object.keys(Menu);
-    console.log('something purty here');
-    console.log(menuRow);
-};
-
-const Menu = {
+/**
+ * @description
+ */
+const helpMenu = {
     help: {
         name: 'help',
-        description: 'help menu',
-        func: createMenu,
+        description: 'displays the menu',
+        func: outputter.createMenu,
     },
     clear: {
         name: 'clear',
-        description: 'clear term',
+        description: 'clear the terminal',
         func: clear,
     },
     quit: {
         name: 'quit',
-        description: 'quit term',
+        description: 'quit todos',
         func: process.exit,
     },
-    create: {
-        name: 'create',
-        description: 'create thing',
+    add: {
+        name: 'add',
+        description: 'add a todo',
+        func: outputter.createError,
     },
-    madison: {
-        name: 'madison',
-        description: 'hi',
-        // func: exitHouse,
-    }
 };
 
-export default Menu;
+export default helpMenu;

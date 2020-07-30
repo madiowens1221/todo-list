@@ -9,7 +9,8 @@
   "scripts": {
     "build": "babel src --out-dir dist/output.js",
     "test": "babel-node ./src/test.js",
-    "start": "babel src --watch --out-dir dist/output.js"
+    "start": "babel src --watch --out-dir dist/output.js",
+    "linter": "eslint src"
   },
   "author": "madison",
   "license": "ISC",
@@ -23,6 +24,9 @@
     "@babel/core": "^7.10.5",
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.10.4",
-    "babel-plugin-module-resolver": "^4.0.0"
+    "babel-plugin-module-resolver": "^4.0.0",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0"
   }
 }
