@@ -1,113 +1,122 @@
-// /** @module app */
+/** @module app */
 import inquirer from 'inquirer';
-import clear from 'clear';
 import chalk from 'chalk';
+import clear from 'clear';
 
+const out = txt => console.log(txt);
 
+const FormatTxt = {
+    white: txt => chalk.keyword('white').bold(txt),
+    red: txt => chalk.keyword('red').bold(txt),
+    redStar: txt => chalk.keyword('white').bgHex('ff5454').bold(txt),
+    menuRed: txt => chalk.keyword('white').bgHex('ff5454').bold(txt),
+    menuOrange: txt => chalk.keyword('white').bgHex('ff8754').bold(txt),
+    menuYellow: txt => chalk.keyword('white').bgHex('ffdd54').bold(txt),
+    menuGreen: txt => chalk.keyword('white').bgHex('9fe88b').bold(txt),
+    menuAqua: txt => chalk.keyword('white').bgHex('81debc').bold(txt),
+    menuBlue: txt => chalk.keyword('white').bgHex('92c1f7').bold(txt),
+    menuPurple: txt => chalk.keyword('white').bgHex('9295f7').bold(txt),
+    menuPink: txt => chalk.keyword('white').bgHex('f792f0').bold(txt),
+    pinkStar: txt => chalk.keyword('white').bgHex('f792f0').bold(txt),
+    helpCommand: txt => chalk.hex('#f5f0f0').bgHex('#ff6600').bold(txt),
+};
+
+const createMenu = () => {
+    const menuRows = Object.keys(menu);
+    //★_|_  _   _|  _    ._ _   _  ._      
+    //  |_ (_) (_| (_)   | | | (/_ | | |_|★ -- mini font
+    let output = ' \n';     
+    output += FormatTxt.redStar('♡') + FormatTxt.menuRed('_|_ ') + FormatTxt.menuOrange(' _  ') + FormatTxt.menuYellow(' _| ') + FormatTxt.menuGreen(' _  ') + FormatTxt.menuAqua(' ._ _  ') + FormatTxt.menuBlue(' _  ') + FormatTxt.menuPurple('._  ') + FormatTxt.menuPink('     ') + '\n';
+    output += FormatTxt.menuRed('  |_ ') + FormatTxt.menuOrange('(_) ') + FormatTxt.menuYellow('(_| ') + FormatTxt.menuGreen('(_) ') + FormatTxt.menuAqua(' | | | ') + FormatTxt.menuBlue('(/_ ') + FormatTxt.menuPurple('| | ') + FormatTxt.menuPink('|_|') + FormatTxt.pinkStar('♡ ') + '\n';
+    out(output);
+    // menuRows.forEach(row => out(FormatTxt.white(`${row}\t${menu[row].description}\n`)));
+    displayMenu();
+};
 
 const menu = {
+    help: {
+        name: 'help',
+        description: 'displays the menu',
+        func: createMenu,
+    },
     clear: {
         name: 'clear',
-        description: 'clear term',
+        description: 'clear the terminal',
         func: clear,
     },
     quit: {
         name: 'quit',
-        description: 'quit term',
+        description: 'quit todos',
         func: process.exit,
     },
-    create: {
-        name: 'create',
-        description: 'create thing',
-        func: function(){
-            console.log('hi you');
-        }
+    add: {
+        name: 'add',
+        description: 'add a todo',
+        func: displayMenu,
     }
 };
 
-console.log(menu);
+const createError = () => {
+    const helpTxt = FormatTxt.helpCommand("todo help");
+    out(FormatTxt.red(`Please enter a valid command or type ${helpTxt}`));
+};
 
-var directionsPrompt = {
+const menuPrompt = {
     type: 'list',
-    name: 'direction',
-    message: 'Which direction would you like to go?',
-    choices: ['Forward', 'Right', 'Left', 'Back'],
+    name: 'menu',
+    message: 'What do you want to do?',
+    choices: ['add a todo', 'clear', 'quit'],
 };
 
-function main() {
-    console.log('You find youself in a small room, there is a door in front of you.');
-    exitHouse();
-}
+const main = () => {
+    const arg = process.argv[2];
+    const operation = menu[arg] || menu.help;
+    // const operation = menu[arg]?.func || (() => createError());
+    operation.func();
+};
 
-function exitHouse() {
-  inquirer.prompt(directionsPrompt).then((answers) => {
-    if (answers.direction === 'Forward') {
-      console.log('You find yourself in a forest');
-      console.log(
-        'There is a wolf in front of you; a friendly looking dwarf to the right and an impasse to the left.'
-      );
-      encounter1();
-    } else {
-      console.log('You cannot go that way. Try again');
-      exitHouse();
-    }
-  });
-}
+const displayMenu = () => {
+    inquirer.prompt(menuPrompt).then((answers) => {
+        if (answers.menu === 'clear') {
+            clear();
+        } else if (answers.menu === 'quit') {
+            process.exit;
+        } else {
+            addTodo();
+        }
+    });
+};
 
-function encounter1() {
-  inquirer.prompt(directionsPrompt).then((answers) => {
-    var direction = answers.direction;
-    if (direction === 'Forward') {
-      console.log('You attempt to fight the wolf');
-      console.log(
-        'Theres a stick and some stones lying around you could use as a weapon'
-      );
-      encounter2b();
-    } else if (direction === 'Right') {
-      console.log('You befriend the dwarf');
-      console.log('He helps you kill the wolf. You can now move forward');
-      encounter2a();
-    } else {
-      console.log('You cannot go that way');
-      encounter1();
-    }
-  });
-}
-
-function encounter2a() {
-  inquirer.prompt(directionsPrompt).then((answers) => {
-    var direction = answers.direction;
-    if (direction === 'Forward') {
-      var output = 'You find a painted wooden sign that says:';
-      output += ' \n';
-      output += ' ____  _____  ____  _____ \n';
-      output += '(_  _)(  _  )(  _ \\(  _  ) \n';
-      output += '  )(   )(_)(  )(_) ))(_)(  \n';
-      output += ' (__) (_____)(____/(_____) \n';
-      console.log(output);
-    } else {
-      console.log('You cannot go that way');
-      encounter2a();
-    }
-  });
-}
-
-function encounter2b() {
-  inquirer
-    .prompt({
-      type: 'list',
-      name: 'weapon',
-      message: 'Pick one',
-      choices: [
-        'Use the stick',
-        'Grab a large rock',
-        'Try and make a run for it',
-        'Attack the wolf unarmed',
-      ],
-    })
-    .then(() => {
-      console.log('The wolf mauls you. You die. The end.');
+const addTodo =() => {
+    inquirer.prompt({
+        type: 'input',
+        name: 'date',
+        message: 'Enter date due',
+    }).then((answers) => {
+        console.log(answers);
     });
 }
 
+
+// const prompt = async () => {
+//     const input = await genInput(menuSelect(Menu));
+//     await Menu[input].func();
+//     prompt();
+// };
+
+// const genInput = async (input) => {
+//     const inp = await inquirer.prompt(input);
+//     return inp.value;
+// };
+
+// const menuSelect = () => ({
+//     name: 'value',
+//     message: 'wat do u want?',
+// });
+
+// createMenu(Menu);
+// prompt();
+
 main();
+
+//END OF FILE sdfsdf sdfsdf 
