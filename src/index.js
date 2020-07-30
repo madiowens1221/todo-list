@@ -22,6 +22,7 @@ const FormatTxt = {
 };
 
 const createMenu = () => {
+    clear();
     const menuRows = Object.keys(menu);
     //★_|_  _   _|  _    ._ _   _  ._      
     //  |_ (_) (_| (_)   | | | (/_ | | |_|★ -- mini font
@@ -31,6 +32,11 @@ const createMenu = () => {
     out(output);
     // menuRows.forEach(row => out(FormatTxt.white(`${row}\t${menu[row].description}\n`)));
     displayMenu();
+};
+
+const createError = () => {
+    const helpTxt = FormatTxt.helpCommand("todo help");
+    out(FormatTxt.red(`Please enter a valid command or type ${helpTxt}`));
 };
 
 const menu = {
@@ -52,13 +58,8 @@ const menu = {
     add: {
         name: 'add',
         description: 'add a todo',
-        func: displayMenu,
+        func: createError,
     }
-};
-
-const createError = () => {
-    const helpTxt = FormatTxt.helpCommand("todo help");
-    out(FormatTxt.red(`Please enter a valid command or type ${helpTxt}`));
 };
 
 const menuPrompt = {
@@ -71,6 +72,7 @@ const menuPrompt = {
 const main = () => {
     const arg = process.argv[2];
     const operation = menu[arg] || menu.help;
+    console.log('op', operation);
     // const operation = menu[arg]?.func || (() => createError());
     operation.func();
 };
